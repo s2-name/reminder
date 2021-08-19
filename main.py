@@ -3,20 +3,21 @@ from PySide2.QtMultimedia import QMediaContent, QMediaPlayer
 from PySide2.QtMultimediaWidgets import QVideoWidget
 from PySide2.QtWidgets import (QMainWindow, QWidget, QPushButton, QApplication, QVBoxLayout)
 from PySide2 import QtGui
-import sys
+import sys, os
 
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 class Reminder(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Глаза!!!")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("eye.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(f"{current_dir}/eye.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.setWindowIcon(icon)
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         videoWidget = QVideoWidget()
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile('/home/s2/PycharmProjects/reminder/video.mp4')))
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(f'{current_dir}/video.mp4')))
         self.mediaPlayer.stateChanged.connect(self.pl)
 
         self.okButton = QPushButton("Хорошо-хорошо")
