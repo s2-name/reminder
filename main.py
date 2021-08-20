@@ -5,8 +5,14 @@ from PySide2.QtWidgets import (QMainWindow, QWidget, QPushButton, QApplication, 
 from PySide2 import QtGui
 import sys, os
 
+# -----------SETTINGS---------
+VIDEOFILE = 'video.mp4'
+VOL = 100
+
+# path to working folder
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
+# Window class
 class Reminder(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -17,9 +23,11 @@ class Reminder(QMainWindow):
 
         self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         videoWidget = QVideoWidget()
-        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(f'{current_dir}/video.mp4')))
+        self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(f'{current_dir}/{VIDEOFILE}')))
+        self.mediaPlayer.setVolume(VOL)
         self.mediaPlayer.stateChanged.connect(self.pl)
 
+        # cancel button
         self.okButton = QPushButton("Хорошо-хорошо")
         self.okButton.clicked.connect(self.ok)
 
@@ -40,11 +48,12 @@ class Reminder(QMainWindow):
 
     def pl(self):
         if self.mediaPlayer.position() >= self.mediaPlayer.duration():
-            # self.mediaPlayer.stop()
             self.mediaPlayer.play()
 
 app = QApplication(sys.argv)
 reminder = Reminder()
+# window size
 reminder.resize(640, 400)
 reminder.show()
 sys.exit(app.exec_())
+
