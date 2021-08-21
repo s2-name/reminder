@@ -1,16 +1,22 @@
-from PySide2.QtCore import QUrl
+from PySide2.QtCore import QUrl, Qt
 from PySide2.QtMultimedia import QMediaContent, QMediaPlayer
 from PySide2.QtMultimediaWidgets import QVideoWidget
 from PySide2.QtWidgets import (QMainWindow, QWidget, QPushButton, QApplication, QVBoxLayout)
 from PySide2 import QtGui
-import sys, os
+from datetime import datetime, time, timedelta
+import sys, os, time, configparser
 
 # -----------SETTINGS---------
-VIDEOFILE = 'video.mp4'
-VOL = 100
+config = configparser.ConfigParser()
+config.read("settings.ini")  # read config
+VIDEOFILE = config['SETTINGS']['videofile'] #get video file
+VOL = int(config['SETTINGS']['volume'])     #get volume
+RESPONSE_PERIOD = int(config['SETTINGS']['response_period']) #get response period (time "+")
 
 # path to working folder
 current_dir = os.path.dirname(os.path.realpath(__file__))
+
+app = QApplication(sys.argv)
 
 # Window class
 class Reminder(QMainWindow):
@@ -50,10 +56,26 @@ class Reminder(QMainWindow):
         if self.mediaPlayer.position() >= self.mediaPlayer.duration():
             self.mediaPlayer.play()
 
-app = QApplication(sys.argv)
-reminder = Reminder()
-# window size
-reminder.resize(640, 400)
-reminder.show()
-sys.exit(app.exec_())
+def update_time():
+    response_time = datetime.now() + timedelta(minutes=RESPONSE_PERIOD)
+    mainloop(response_time)
+
+def mainloop(rt):
+    while True:
+        if rt <= datetime.now():
+            show_window()
+            update_time()
+        time.sleep(1)
+
+
+def show_window():
+    reminder = Reminder()
+    reminder.setWindowFlag(Qt.WindowStaysOnTopHint)
+    # window size
+    reminder.resize(640, 400)
+    reminder.show()
+    app.exec_()
+
+if __name__ == "__main__":
+    update_time()
 
