@@ -1,3 +1,4 @@
+#!/bin/python3
 from PySide2.QtCore import QUrl, Qt
 from PySide2.QtMultimedia import QMediaContent, QMediaPlayer
 from PySide2.QtMultimediaWidgets import QVideoWidget
